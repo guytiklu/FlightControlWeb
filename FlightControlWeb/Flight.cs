@@ -12,7 +12,7 @@ namespace FlightControlWeb
         double latitude;
         int passengers;
         string company_name;
-        string date_time;
+        DateTime date_time;
         bool is_external;
 
 
@@ -21,7 +21,7 @@ namespace FlightControlWeb
 
         }
         public Flight(string flight_id, double longitude, double latitude, int passengers,
-            string company_name, string date_time, bool is_external)
+            string company_name, DateTime date_time, bool is_external)
         {
             Flight_id = flight_id;
             Longitude = longitude;
@@ -56,7 +56,7 @@ namespace FlightControlWeb
             get { return company_name; }
             set { company_name = value; }
         }
-        public string Date_time
+        public DateTime Date_time
         {
             get { return date_time; }
             set { date_time = value; }

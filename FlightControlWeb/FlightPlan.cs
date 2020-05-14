@@ -8,8 +8,6 @@ namespace FlightControlWeb
 {
     public class FlightPlan
     {
-        List<Segment> segmants;
-
         private int passengers;
 
         public int Passengers
@@ -42,6 +40,13 @@ namespace FlightControlWeb
             set { segments = value; }
         }
 
+        private string flight_id;
+
+        public string Flight_id
+        {
+            get { return flight_id; }
+            set { flight_id = value; }
+        }
 
 
     }
