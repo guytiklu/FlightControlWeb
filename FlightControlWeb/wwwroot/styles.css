@@ -1,0 +1,44 @@
+﻿.head {
+    text-align: center;
+    font: 32px arial, verdana;
+}
+
+.map {
+    grid-column: 1/6;
+    grid-row: 1/6;
+}
+
+.info {
+    grid-column: 1/6;
+}
+
+.list_in {
+    grid-column: 6;
+    grid-row: 1/4;
+}
+
+.list_out {
+    grid-column: 6;
+    grid-row: 4/7;
+}
+
+.grid-container {
+    position: absolute;
+    display: grid;
+    grid-template-columns: auto auto auto auto auto auto;
+    grid-template-rows: auto auto auto auto auto auto;
+    grid-gap: 10px;
+    background-color: #2196F3;
+    padding: 10px;
+    top: 70px;
+    left: 10px;
+    right: 10px;
+    bottom: 10px;
+}
+
+    .grid-container > div {
+        background-color: rgba(255, 255, 255, 0.8);
+        text-align: center;
+        padding: 20px;
+        font-size: 20px;
+    }

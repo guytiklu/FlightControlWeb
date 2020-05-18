@@ -8,8 +8,8 @@ namespace FlightControlWeb
 {
     public class FlightPlan
     {
-        private int passengers;
 
+        private int passengers;
         public int Passengers
         {
             get { return passengers; }
@@ -40,14 +40,15 @@ namespace FlightControlWeb
             set { segments = value; }
         }
 
-        private string flight_id;
-
-        public string Flight_id
+        public FlightPlan(int passengers, string company_name, InitialLocation initial_location, List<Segment> segments)
         {
-            get { return flight_id; }
-            set { flight_id = value; }
+            this.passengers = passengers;
+            this.company_name = company_name;
+            this.initial_location = initial_location;
+            this.segments = segments;
         }
-
-
+        public FlightPlan()
+        {
+        }
     }
 }

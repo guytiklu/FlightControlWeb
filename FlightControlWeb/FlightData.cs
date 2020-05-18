@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Components;
 using Microsoft.CodeAnalysis;
 
 namespace FlightControlWeb
@@ -21,7 +22,16 @@ namespace FlightControlWeb
 
         public FlightData(FlightPlan fp)
         {
-            //generate id
+            Random rnd = new Random();
+            int a = rnd.Next(10);
+            int b = rnd.Next(10);
+            int c = rnd.Next(10);
+            int d = rnd.Next(10);
+            int e = rnd.Next(10);
+            int f = rnd.Next(10);
+            string serial1 = a.ToString() + b.ToString() + c.ToString() + d.ToString();
+            string serial2 = e.ToString() + f.ToString();
+            Id = "FLY" + serial1 + "NM" + serial2;
             this.fp = fp;
         }
 
@@ -37,7 +47,7 @@ namespace FlightControlWeb
             DateTime landingTime = fp.Initial_location.Date_time;
             foreach (Segment s in fp.Segments)
             {
-                landingTime.AddSeconds(s.Timespan_seconds); //summing segmengs second to departure time = landing time
+                landingTime = landingTime.AddSeconds(s.Timespan_seconds); //summing segmengs second to departure time = landing time
             }
             if (dt.CompareTo(fp.Initial_location.Date_time)>0 && dt.CompareTo(landingTime)< 0)
             {
@@ -56,7 +66,7 @@ namespace FlightControlWeb
             foreach (Segment s in fp.Segments)
             {
                 b = a;
-                b.AddSeconds(s.Timespan_seconds);
+                b = b.AddSeconds(s.Timespan_seconds);
                 sb = s;
 
                 if (dt.CompareTo(a) > 0 && dt.CompareTo(b) < 0)

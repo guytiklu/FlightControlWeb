@@ -25,15 +25,18 @@ namespace FlightControlWeb
 			set { latitude = value; }
 		}
 
-		private DateTime date_time;
 
-		public InitialLocation(double longitude, double latitude, DateTime date_time)
+		public InitialLocation(double longitude, double latitude, string date_time)
 		{
 			Longitude = longitude;
 			Latitude = latitude;
-			Date_time = date_time;
+			Date_time = DateTime.Parse(date_time);
+		}
+		public InitialLocation()
+		{
 		}
 
+		private DateTime date_time;
 		public DateTime Date_time
 		{
 			get { return date_time; }

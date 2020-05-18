@@ -31,6 +31,9 @@ namespace FlightControlWeb
 			Latitude = latitude;
 			Timespan_seconds = timespan_seconds;
 		}
+		public Segment()
+		{
+		}
 
 		public int Timespan_seconds
 		{
