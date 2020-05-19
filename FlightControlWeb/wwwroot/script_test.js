@@ -1,3 +1,3 @@
 ﻿function func(element) {
-    document.getElementById(element).innerHTML = 'Fuck';
+    document.getElementById(element).innerHTML = 'Fuck' ;
 }
