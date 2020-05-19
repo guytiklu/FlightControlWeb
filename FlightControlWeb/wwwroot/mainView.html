@@ -2,16 +2,27 @@
 <html>
 <head>
     <title>Flight Control</title>
-    <link rel="stylesheet" type="text/css" href="styles.css" >
+    <link rel="stylesheet" type="text/css" href="styles.css" />
+    <script src="script_test.js"></script>
+    <script src="jquery-3.5.1.min.js"></script>
+    <script>
+        $(function () {
+            $("#list_in").load("list_in.html");
+            $("#list_out").load("list_out.html");
+            $("#map").load("map.html");
+            $("#info").load("info.html");
+        });
+    </script>
 </head>
 <body>
+    
     <h1 class="head">Flight Control</h1>
 
     <div class="grid-container">
-        <div class="map">Map</div>
-        <div class="info">Detail</div>
-        <div class="list_in">List1</div>
-        <div class="list_out">List2</div>
+        <div id="map" class="component map"></div>
+        <div id="info" class="component info"></div>
+        <div id="list_in" class="component list_in"></div>
+        <div id="list_out" class="component list_out"></div>
     </div>
 
 </body>
