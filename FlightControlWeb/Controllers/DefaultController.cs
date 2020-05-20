@@ -15,7 +15,7 @@ namespace FlightControlWeb.Controllers
         [HttpGet]
         public ActionResult<String> Get()
         {
-            string html = System.IO.File.ReadAllText("Views/mainView.html");
+            string html = System.IO.File.ReadAllText("wwwroot/mainView.html");
             return Content(html, "text/html");
         }
     }

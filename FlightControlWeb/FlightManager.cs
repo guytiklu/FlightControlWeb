@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
+using Newtonsoft.Json;
 
 namespace FlightControlWeb
 {
@@ -29,6 +30,10 @@ namespace FlightControlWeb
         public async Task<List<Flight>> getAllFlights(DateTime time)
         {
             List<Flight> list = getInternal(time);
+            foreach (Flight f in list.ToList())
+            {
+                f.Is_external = false;
+            }
             //add to list from external servers
             foreach (ServerInfo si in externalFlightsServers.ToList<ServerInfo>())
             {
@@ -48,6 +53,7 @@ namespace FlightControlWeb
 
                     Console.WriteLine(responseBody);
                     exList = Newtonsoft.Json.JsonConvert.DeserializeObject<List<Flight>>(responseBody);
+                    //exList = JsonConvert.DeserializeObject<List<Flight>>(responseBody);
 
                 }
                 catch (HttpRequestException e)

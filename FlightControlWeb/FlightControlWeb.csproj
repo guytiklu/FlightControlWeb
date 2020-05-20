@@ -18,12 +18,10 @@
 
   <ItemGroup>
     <Folder Include="Lib\" />
-    <Folder Include="wwwroot\sub_views\" />
   </ItemGroup>
 
   <ItemGroup>
     <None Include="wwwroot\mainView.html" />
-    <None Include="wwwroot\script_test.js" />
     <None Include="wwwroot\styles.css" />
   </ItemGroup>
 

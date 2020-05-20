@@ -3,26 +3,59 @@
 <head>
     <title>Flight Control</title>
     <link rel="stylesheet" type="text/css" href="styles.css" />
-    <script src="script_test.js"></script>
     <script src="jquery-3.5.1.min.js"></script>
-    <script>
-        $(function () {
-            $("#list_in").load("list_in.html" );
-            $("#list_out").load("list_out.html");
-            $("#map").load("map.html");
-            $("#info").load("info.html");
-        });
-    </script>
+    <script src="scripts.js"></script>
+    <script src="map_script.js"></script>
 </head>
-<body>
+<body onload="run()">
     
     <h1 class="head">Flight Control</h1>
 
     <div class="grid-container">
-        <div id="map" class="component map"></div>
-        <div id="info" class="component info"></div>
-        <div id="list_in" class="component list_in"></div>
-        <div id="list_out" class="component list_out"></div>
+        <div id="map" class="component map">
+            <div id="floating-panel">
+                <input onclick="removeLine();" type=button value="Remove line">
+                <input onclick="addLine();" type=button value="Restore line">
+            </div>
+            <div id="map"></div>
+            <script>
+                // Initialize and add the map
+                initMap();
+            </script>
+
+            <script async defer
+                    src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBbx36xM3QhkY2Yk8OXovM5YJRrFEej6_E&callback=initMap">
+            </script>
+        </div>
+
+        <div id="info" class="component info">
+            <h3>Info</h3>
+            <div style="text-align:left">
+                <div class="text">Flight ID: </div>
+                <div class="text left_margin">Company: </div>
+                <div class="text left_margin">Passengers: </div>
+                <div class="text left_margin">Departure Location: </div>
+                <div class="text left_margin">Departure Time: </div>
+                <div class="text left_margin">Landing Location: </div>
+                <div class="text left_margin">Landing Time: </div>
+            </div>
+        </div>
+
+        <div id="list_in" class="component list_in">
+            <h3>Internal Flights:</h3>
+            <nav>
+                <ul id="internal_list" style="list-style-type:square">
+                </ul>
+            </nav>
+        </div>
+
+        <div id="list_out" class="component list_out">
+            <h3>External Flights</h3>
+            <nav>
+                <ul id="external_list" style="list-style-type:square">
+                </ul>
+            </nav>
+        </div>
     </div>
 
 </body>
