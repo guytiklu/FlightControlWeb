@@ -18,7 +18,6 @@ namespace FlightControlWeb
         {
             List<Flight> list = new List<Flight>();
             foreach (FlightData x in internalFlights){
-                //Debug.WriteLine("ID:"+x.Id+", On air:"+x.onAir(time));//@@@@@@@@@@@@@@@@@@@@@@@
                 if (x.onAir(time))
                 {
                     Location loc = x.getAccuratePosition(time);
@@ -31,15 +30,12 @@ namespace FlightControlWeb
 
         public async Task<List<Flight>> getAllFlights(DateTime time)
         {
+
             List<Flight> list = getInternal(time);
-            foreach (Flight f in list.ToList())
-            {
-                f.Is_external = false;
-            }
             //add to list from external servers
             foreach (ServerInfo si in externalFlightsServers.ToList<ServerInfo>())
             {
-                List<Flight> exList = null;
+                List<Flight> exList = new List<Flight>();
                 
                 // Create a New HttpClient object.
                 HttpClient client = new HttpClient();
@@ -53,9 +49,16 @@ namespace FlightControlWeb
                     string responseBody = await response.Content.ReadAsStringAsync();
                     // string responseBody = await client.GetStringAsync(uri);
 
-                    Console.WriteLine(responseBody);
-                    exList = Newtonsoft.Json.JsonConvert.DeserializeObject<List<Flight>>(responseBody);
-                    //exList = JsonConvert.DeserializeObject<List<Flight>>(responseBody);
+                    //Debug.WriteLine(responseBody);
+                    try
+                    {
+                        //exList = JsonConvert.DeserializeObject<List<Flight>>(responseBody);
+                        exList = Newtonsoft.Json.JsonConvert.DeserializeObject<List<Flight>>(responseBody);
+                    }
+                    catch
+                    {
+                        exList = new List<Flight>();
+                    }
 
                 }
                 catch (HttpRequestException e)
@@ -75,7 +78,7 @@ namespace FlightControlWeb
                 {
                     f.Is_external = true;
                 }
-                list=list.Concat(exList).ToList();
+                list.AddRange(exList);
             }
 
             return list ;
