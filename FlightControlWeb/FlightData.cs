@@ -49,7 +49,7 @@ namespace FlightControlWeb
             {
                 landingTime = landingTime.AddSeconds(s.Timespan_seconds); //summing segmengs second to departure time = landing time
             }
-            if (dt.CompareTo(fp.Initial_location.Date_time)>0 && dt.CompareTo(landingTime)< 0)
+            if (dt.CompareTo(fp.Initial_location.Date_time)>=0 && dt.CompareTo(landingTime)<=0)
             {
                 return true;
             }

@@ -35,10 +35,10 @@
     }
 
 .list_in {
-        grid-column: 2;
-        grid-row: 1;
-        overflow: auto;
-    }
+    grid-column: 2;
+    grid-row: 1;
+    overflow: auto;
+}
 
 .list_out {
         grid-column: 2;

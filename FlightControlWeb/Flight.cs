@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -14,7 +15,6 @@ namespace FlightControlWeb
         string company_name;
         DateTime date_time;
         bool is_external;
-
 
         public Flight()
         {

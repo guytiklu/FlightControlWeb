@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
@@ -17,6 +18,7 @@ namespace FlightControlWeb
         {
             List<Flight> list = new List<Flight>();
             foreach (FlightData x in internalFlights){
+                //Debug.WriteLine("ID:"+x.Id+", On air:"+x.onAir(time));//@@@@@@@@@@@@@@@@@@@@@@@
                 if (x.onAir(time))
                 {
                     Location loc = x.getAccuratePosition(time);
@@ -167,5 +169,11 @@ namespace FlightControlWeb
                 }
             }
         }
+
+        public void printInternals()
+        {
+
+        }
     }
+
 }
