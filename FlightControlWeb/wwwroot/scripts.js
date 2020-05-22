@@ -186,6 +186,7 @@ function show_more_details(id) {
 
 function delete_from_list(id) {
 
+	event.stopPropagation();
 	//remove from server
 	var xmlhttp = new XMLHttpRequest();
 	//var url = "http://ronyut.atwebpages.com/ap2/api/Flights?relative_to=2020-12-26T23:56:26Z";  //external server
