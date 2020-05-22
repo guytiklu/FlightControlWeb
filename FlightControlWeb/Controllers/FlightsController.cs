@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
@@ -14,7 +15,7 @@ namespace FlightControlWeb.Controllers
         [HttpGet]
         public ActionResult<List<Flight>> GetInternal([FromQuery(Name = "relative_to")] DateTime time)
         {
-            time = time.AddHours(-2);
+            time = time.ToUniversalTime();
             FlightManager fm = new FlightManager();
             if (Request.Query.ContainsKey("sync_all"))
             {

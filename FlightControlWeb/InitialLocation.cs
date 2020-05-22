@@ -31,6 +31,7 @@ namespace FlightControlWeb
 			Longitude = longitude;
 			Latitude = latitude;
 			Date_time = DateTime.Parse(date_time);
+			Date_time = Date_time.ToUniversalTime();
 		}
 		public InitialLocation()
 		{

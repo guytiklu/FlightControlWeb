@@ -12,10 +12,6 @@
 
     <div class="grid-container">
         <div id="map" class="component map">
-            <div id="floating-panel">
-                <input onclick="removeLine();" type=button value="Remove line">
-                <input onclick="addLine();" type=button value="Restore line">
-            </div>
             <div id="map"></div>
             <script>
                 // Initialize and add the map
@@ -27,13 +23,6 @@
             </script>
         </div>
 
-        <div id="floating-panel">
-            <input onclick="removeLine();" type=button value="Remove line">
-            <input onclick="addLine();" type=button value="Restore line">
-            <input onclick="clearMarkers();" type=button value="Hide Markers">
-            <input onclick="showMarkers();" type=button value="Show All Markers">
-            <input onclick="deleteMarkers();" type=button value="Delete Markers">
-        </div>
         <div id="info" class="component info">
             <h3>Info</h3>
             <div style="text-align:left">
@@ -48,19 +37,13 @@
         </div>
 
         <div id="list_in" class="component list_in">
-            <h3>Internal Flights:</h3>
-            <nav>
-                <ul id="internal_list" style="list-style-type:square">
-                </ul>
-            </nav>
+            <h3 id="internal_header">Internal Flights:</h3>
+            <ul id="internal_list" style="list-style-type:square"></ul>
         </div>
 
         <div id="list_out" class="component list_out">
             <h3>External Flights</h3>
-            <nav>
-                <ul id="external_list" style="list-style-type:square">
-                </ul>
-            </nav>
+            <ul id="external_list" style="list-style-type:square"></ul>
         </div>
     </div>
 

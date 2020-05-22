@@ -11,12 +11,35 @@ function run() {
 	get_flights_service();
 
 	var dropbox = document.getElementById("list_in");
-
-	dropbox.addEventListener('dragenter', noopHandler, false);
-	dropbox.addEventListener('dragexit', noopHandler, false);
+	dropbox.addEventListener('dragenter', dragEnter, false);
+	dropbox.addEventListener('dragleave', dragExit, false);
 	dropbox.addEventListener('dragover', noopHandler, false);
 	dropbox.addEventListener('drop', drop, false);
 
+	function dragEnter(evt) {
+		evt.stopPropagation();
+		evt.preventDefault();
+		document.getElementById('internal_header').style.display = 'none';
+		document.getElementById('internal_list').style.display = 'none';
+		document.getElementById("list_in").style.backgroundColor = '#e6e6ff';
+		var dropText = document.createElement("h3");
+		dropText.innerHTML = "Drop Here";
+		dropText.id = "drop";
+		dropText.style.position = "relative";
+		dropText.style.left = "0%";
+		dropText.style.top = "40%";
+		dropText.style.pointerEvents = 'none';
+		document.getElementById("list_in").appendChild(dropText);
+	}
+	function dragExit(evt) {
+		evt.stopPropagation();
+		evt.preventDefault();
+		var element = document.getElementById("drop");
+		element.parentNode.removeChild(element);
+		document.getElementById("list_in").style.backgroundColor = 'rgba(255, 255, 255, 0.8)';
+		document.getElementById('internal_header').style.display = 'inherit';
+		document.getElementById('internal_list').style.display = 'inherit';
+	}
 	function noopHandler(evt) {
 		evt.stopPropagation();
 		evt.preventDefault();
@@ -24,6 +47,12 @@ function run() {
 	function drop(evt) {
 		evt.stopPropagation();
 		evt.preventDefault();
+		var element = document.getElementById("drop");
+		element.parentNode.removeChild(element);
+		document.getElementById("list_in").style.backgroundColor = 'rgba(255, 255, 255, 0.8)';
+		document.getElementById('internal_header').style.display = 'inherit';
+		document.getElementById('internal_list').style.display = 'inherit';
+
 		var files = evt.dataTransfer.files; // Array of all files
 
 		for (var i = 0, file; file = files[i]; i++) {
@@ -54,9 +83,9 @@ function get_flights_service() {
 	var xmlhttp = new XMLHttpRequest();
 
 	var d = new Date();
-	var hrs = d.getHours();
-	var mins = d.getMinutes();
-	var secs = d.getSeconds();
+	var hrs = d.getUTCHours();
+	var mins = d.getUTCMinutes();
+	var secs = d.getUTCSeconds();
 	if (hrs < 10) {
 		hrs = "0" + hrs.toString();
 	} else { hrs = hrs.toString(); }
@@ -66,7 +95,8 @@ function get_flights_service() {
 	if (secs < 10) {
 		secs = "0" + secs.toString();
 	} else { secs = secs.toString(); }
-	var date = d.getFullYear() + "-" + (d.getMonth() + 1) + "-" + d.getDate() + "T" + hrs + ":" + mins + ":" + secs + "Z";
+
+	var date = d.getUTCFullYear() + "-" + (d.getUTCMonth() + 1) + "-" + d.getUTCDate() + "T" + hrs + ":" + mins + ":" + secs + "Z";
 	var url = ip + ":" + port + "/api/Flights?relative_to=" + date + "&sync_all";
 	$.get(url, function (data) {
 		var arr = data;
