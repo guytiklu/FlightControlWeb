@@ -2,6 +2,7 @@
 var port = "52018";
 let map;
 var markers = [];
+var clicked = null;
 var flightPlanCoordinates = [
 	{ lat: 45, lng: 45 },
 ];
@@ -76,7 +77,33 @@ function run() {
 		}
 	}
 
+	var map = document.getElementById('map');
+	map.addEventListener("click", function (event) {
+		if (clicked != null) {
+			clearClicked();
+		}
+	});
+
 	var intervalID = window.setInterval(get_flights_service, 3000);
+}
+
+function clearClicked() {
+	//remove info
+	document.getElementById("info_flight_id").innerHTML = "";
+	document.getElementById("info_air_company").innerHTML = "";
+	document.getElementById("info_passengers").innerHTML = "";
+	document.getElementById("info_departure_loc").innerHTML = "";
+	document.getElementById("info_departure_time").innerHTML = "";
+	document.getElementById("info_landing_loc").innerHTML = "";
+	document.getElementById("info_landing_time").innerHTML = "";
+
+	//remove border
+	var elem = document.getElementById(clicked);
+	elem.style.border = "";
+
+	//remove path @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+
+	clicked = null;
 }
 
 function get_flights_service() {
@@ -143,6 +170,10 @@ function get_flights_service() {
 				iconImage: image,
 			});
 		}
+		if (clicked != null) {
+			var elem = document.getElementById(clicked);
+			elem.style.border = "thin solid #0000ff";
+		}
 	});
 }
 
@@ -150,11 +181,31 @@ function add_onclick(id) {
 	//add show_more_details to onclick
 	var elem = document.getElementById(id);
 	elem.setAttribute('onclick', "show_more_details(\"" + id + "\")");
+	elem.addEventListener("mouseenter", function (event) {
+		if (clicked != id) {
+			event.target.style.border = "thin solid #ff0000";
+		}
+	});
+	elem.addEventListener("mouseleave", function (event) {
+		if (clicked != id) {
+			event.target.style.border = "";
+		}
+	});
+}
+
+function highlightFlight(id) {
+	var elem = document.getElementById(id);
+	elem.style.border = "thin solid #0000ff";
+	//highlight in map
 }
 
 function show_more_details(id) {
+	if (clicked != null) { clearClicked(); }
+	clicked = id;
+	highlightFlight(id);
 	var url = ip + ":" + port + "/api/FlightPlan/"+id;
 	$.get(url, function (data) {
+		//show info
 		var plan = new FlightPlan(data);
 		document.getElementById("info_flight_id").innerHTML = id;
 		document.getElementById("info_air_company").innerHTML = plan.get_company_name();
@@ -181,7 +232,11 @@ function show_more_details(id) {
 		landing_time.setSeconds(landing_time.getSeconds() + seconds);
 		var split = landing_time.toString().split('+');
 		document.getElementById("info_landing_time").innerHTML = split[0];
+
+		//show path
+
 	});
+
 }
 
 function delete_from_list(id) {
@@ -197,8 +252,12 @@ function delete_from_list(id) {
 	xmlhttp.send();
 
 	//remove manually
+	if (id == clicked) {
+		clearClicked();
+	}
 	elem = document.getElementById(id);
 	elem.parentNode.removeChild(elem);
+
 
 	//remove from map @@@@@@eldad
 
