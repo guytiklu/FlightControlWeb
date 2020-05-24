@@ -1,4 +1,4 @@
-﻿var ip ="http://localhost";
+﻿var ip ="http://localhost" ;
 var port = "52018";
 let map;
 var markers = [];
