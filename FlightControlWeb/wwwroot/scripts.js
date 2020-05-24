@@ -3,10 +3,15 @@ var port = "52018";
 let map;
 var markers = [];
 var clicked = null;
-var flightPlanCoordinates = [
-	{ lat: 45, lng: 45 },
-];
 var flightPath;
+var landing_longi;
+var landing_lati;
+var segmantLocations = [];
+var flags;
+var flightPlanCoordinates = [];
+var flightPath;
+var counter = 0;
+var init_loc;
 
 function run() {
 	get_flights_service();
@@ -130,6 +135,7 @@ function get_flights_service() {
 
 		$("#internal_list").empty();
 		$("#external_list").empty();
+		clearMarkers();
 		for (var i in arr) {
 			var f = new Flight(arr[i]);
 			//put flight in list
@@ -142,32 +148,22 @@ function get_flights_service() {
 			}
 			add_onclick(id);
 
-			clearMarkers();
-
-			var point = new google.maps.LatLng(f.get_latitude(), f.get_longitude());
-			flightPlanCoordinates.push(point);
-			flightPath = new google.maps.Polyline({
-				path: flightPlanCoordinates,
-				geodesic: true,
-				strokeColor: '#FF0000',
-				strokeOpacity: 1.0,
-				strokeWeight: 2
-			});
-			flightPath.setMap(map)
-			addLine();
-
+			
 			var image = {
 				url: "planeicon.png",
 				// This marker is 20 pixels wide by 32 pixels high.
-				size: new google.maps.Size(50, 50),
+				size: new google.maps.Size(40, 40),
 				// The origin for this image is (0, 0).
 				origin: new google.maps.Point(0, 0),
 				// The anchor for this image is the base of the flagpole at (0, 32).
 				anchor: new google.maps.Point(0, 32)
 			};
+
 			addMarker({
 				coords: { lat: f.get_latitude(), lng: f.get_longitude() },
 				iconImage: image,
+				animation: google.maps.Animation.BOUNCE,
+				id: f.get_flight_id(),
 			});
 		}
 		if (clicked != null) {
@@ -175,6 +171,7 @@ function get_flights_service() {
 			elem.style.border = "thin solid #0000ff";
 		}
 	});
+
 }
 
 function add_onclick(id) {
@@ -200,43 +197,48 @@ function highlightFlight(id) {
 }
 
 function show_more_details(id) {
+	//alert("im at show more");
 	if (clicked != null) { clearClicked(); }
 	clicked = id;
 	highlightFlight(id);
-	var url = ip + ":" + port + "/api/FlightPlan/"+id;
+	segmantLocations = [];
+	flightPlanCoordinates = [];
+	var url = ip + ":" + port + "/api/FlightPlan/" + id;
 	$.get(url, function (data) {
-		//show info
 		var plan = new FlightPlan(data);
 		document.getElementById("info_flight_id").innerHTML = id;
 		document.getElementById("info_air_company").innerHTML = plan.get_company_name();
 		document.getElementById("info_passengers").innerHTML = plan.get_passengers();
-		var init_loc = new InitialLocation(plan.get_initial_location());
-		document.getElementById("info_departure_loc").innerHTML = "("+init_loc.get_latitude() + "," + init_loc.get_longitude()+")";
+		init_loc = new InitialLocation(plan.get_initial_location());
+		document.getElementById("info_departure_loc").innerHTML = "(" + init_loc.get_latitude() + "," + init_loc.get_longitude() + ")";
+		segmantLocations.push(init_loc.get_latitude());
+		segmantLocations.push(init_loc.get_longitude());
 		var departure_time = new Date(init_loc.get_date_time());
 		var split = departure_time.toString().split('+');
 		document.getElementById("info_departure_time").innerHTML = split[0];
-		var landing_longi;
-		var landing_lati;
-		var seconds=0;
+		/*var landing_longi;
+		var landing_lati;*/
+		var seconds = 0;
 		var landing_time = new Date(init_loc.get_date_time());
-
 		var segments = plan.get_segments();
 		for (var i in segments) {
 			var s = new Segment(segments[i]);
 			landing_lati = s.get_latitude();
+
+			segmantLocations.push(landing_lati);
 			landing_longi = s.get_longitude();
+			segmantLocations.push(landing_longi);
 			seconds += s.get_timespan_seconds();
 		}
+
+		drawLine();
 
 		document.getElementById("info_landing_loc").innerHTML = "(" + landing_lati + "," + landing_longi + ")";
 		landing_time.setSeconds(landing_time.getSeconds() + seconds);
 		var split = landing_time.toString().split('+');
 		document.getElementById("info_landing_time").innerHTML = split[0];
 
-		//show path
-
 	});
-
 }
 
 function delete_from_list(id) {
@@ -266,87 +268,77 @@ function delete_from_list(id) {
 }
 
 function initMap() {
-			// The location of Uluru
-			var uluru = { lat: 31.771959, lng: 35.217018 };
-			// The map, centered at Uluru
-			map = new google.maps.Map(
-				document.getElementById('map'), { zoom: 5, center: uluru });
-			/*var image = {
-			 url: 'https://developers.google.com/maps/documentation/javascript/examples/full/images/beachflag.png',
-			 // This marker is 20 pixels wide by 32 pixels high.
-			 size: new google.maps.Size(20, 32),
-			 // The origin for this image is (0, 0).
-			 origin: new google.maps.Point(0, 0),
-			 // The anchor for this image is the base of the flagpole at (0, 32).
-			 anchor: new google.maps.Point(0, 32)
-			};*/
+	// The location of Uluru
+	var uluru = { lat: 31.771959, lng: 35.217018 };
+	// The map, centered at Uluru
+	map = new google.maps.Map(
+		document.getElementById('map'), { zoom: 5, center: uluru });
 
-			/* flightPlanCoordinates = [
-			 {  },
-			];*/
-			/*  flightPath = new google.maps.Polyline({
-			  path: flightPlanCoordinates,
-			  geodesic: true,
-			  strokeColor: '#FF0000',
-			  strokeOpacity: 1.0,
-			  strokeWeight: 2
-			 });
-			 flightPath.setMap(map)
-			 addLine();*/
-
-			/* addMarker({
-			  coords: { lat: 30, lng: 30 },
-			  iconImage: image,
-			  content: '<h1>Los Angels</h1>',
-			 });
-			 addMarker({
-			  coords: { lat: 35, lng: 32 },
-			  //iconImage: image,
-			  //content: '<h1>Vegas</h1>',
-			 });
-			 addMarker({
-			  coords: { lat: 40, lng: 42 },
-			  iconImage: image,
-			  content: '<h1>Chigao</h1>',
-			
-			 });
-			 addMarker({
-			  coords: { lat: 45, lng: 35 },
-			  iconImage: image,
-			  content: '<h1>Okland</h1>',
-			
-			 });*/
-		}
-///Add marker Function
+}
 
 function addMarker(props) {
-			//alert("im at the add marker");
-			var marker = new google.maps.Marker({
-				position: props.coords,
-				//animation: google.maps.Animation.DROP,
-				map: map,
-			});
+	//alert("im at the add marker");
+	var marker = new google.maps.Marker({
+		position: props.coords,
+		//animation: google.maps.Animation.DROP,
+		map: map,
+	});
 
-			if (props.iconImage) { // check for icon change
-				marker.setIcon(props.iconImage);
-			}
-			if (props.content) { //check for content change
-				var infoWindow = new google.maps.InfoWindow({
-					content: props.content
-				});
-				marker.addListener('click', function () { ///popping the info window
-					infoWindow.open(map, marker);
-				});
-			}
-			marker.addListener('click', function () { /// make the marker jump
-				if (marker.getAnimation() !== null) {
-					marker.setAnimation(null);
-				} else {
-					marker.setAnimation(google.maps.Animation.BOUNCE);
-				}
-			});
-			markers.push(marker);
+
+	if (props.iconImage) { // check for icon change
+		marker.setIcon(props.iconImage);
+	}
+	if (props.content) { //check for content change
+		var infoWindow = new google.maps.InfoWindow({
+			content: props.content
+		});
+		/*marker.addListener('click', function () { ///popping the info window
+		 infoWindow.open(map, marker);
+		});*/
+	}
+
+	marker.addListener('mouseenter', function () {
+		marker.setIcon('redplaneicon.png');
+	});
+	marker.addListener('mouseleave', function () {
+		marker.setIcon('planeicon.png');
+	});
+	marker.addListener('click', function () { /// make the marker jump and show path
+
+		if (marker.getAnimation() !== null) {
+			marker.setAnimation(null);
+		} else {
+			marker.setAnimation(google.maps.Animation.BOUNCE);
 		}
+		show_more_details(props.id);
+
+	});
+	marker.addListener('click', function () {
+
+		removeLine();
+	});
+
+	markers.push(marker);
+
+}
+
+function drawLine() {
+	for (i = 0; i < segmantLocations.length; i += 2) {
+		var point = new google.maps.LatLng(segmantLocations[i], segmantLocations[i + 1]);
+		flightPlanCoordinates.push(point);
+	}
+
+	flightPath = new google.maps.Polyline({
+		path: flightPlanCoordinates,
+		geodesic: true,
+		strokeColor: '#FF0000',
+		strokeOpacity: 1.0,
+		strokeWeight: 2
+	});
+	flightPath.setMap(map);
+	addLine();
+
+}
 
 // Sets the map on all markers in the array.
 function setMapOnAll(map) {
