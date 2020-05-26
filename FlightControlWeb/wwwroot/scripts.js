@@ -82,33 +82,7 @@ function run() {
 		}
 	}
 
-	var map = document.getElementById('map');
-	map.addEventListener("click", function (event) {
-		if (clicked != null) {
-			clearClicked();
-		}
-	});
-
 	var intervalID = window.setInterval(get_flights_service, 3000);
-}
-
-function clearClicked() {
-	//remove info
-	document.getElementById("info_flight_id").innerHTML = "";
-	document.getElementById("info_air_company").innerHTML = "";
-	document.getElementById("info_passengers").innerHTML = "";
-	document.getElementById("info_departure_loc").innerHTML = "";
-	document.getElementById("info_departure_time").innerHTML = "";
-	document.getElementById("info_landing_loc").innerHTML = "";
-	document.getElementById("info_landing_time").innerHTML = "";
-
-	//remove border
-	var elem = document.getElementById(clicked);
-	elem.style.border = "";
-
-	//remove path @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
-
-	clicked = null;
 }
 
 function get_flights_service() {
@@ -135,7 +109,7 @@ function get_flights_service() {
 
 		$("#internal_list").empty();
 		$("#external_list").empty();
-		clearMarkers();
+		deleteMarkers();
 		for (var i in arr) {
 			var f = new Flight(arr[i]);
 			//put flight in list
@@ -172,6 +146,29 @@ function get_flights_service() {
 		}
 	});
 
+}
+
+function clearClicked() {
+	if (clicked != null) {
+		//remove info
+		document.getElementById("info_flight_id").innerHTML = "";
+		document.getElementById("info_air_company").innerHTML = "";
+		document.getElementById("info_passengers").innerHTML = "";
+		document.getElementById("info_departure_loc").innerHTML = "";
+		document.getElementById("info_departure_time").innerHTML = "";
+		document.getElementById("info_landing_loc").innerHTML = "";
+		document.getElementById("info_landing_time").innerHTML = "";
+
+		//remove border
+		var elem = document.getElementById(clicked);
+		elem.style.border = "";
+
+		//remove path
+		removeLine();
+
+
+	}
+	clicked = null;
 }
 
 function add_onclick(id) {
@@ -216,8 +213,6 @@ function show_more_details(id) {
 		var departure_time = new Date(init_loc.get_date_time());
 		var split = departure_time.toString().split('+');
 		document.getElementById("info_departure_time").innerHTML = split[0];
-		/*var landing_longi;
-		var landing_lati;*/
 		var seconds = 0;
 		var landing_time = new Date(init_loc.get_date_time());
 		var segments = plan.get_segments();
@@ -257,13 +252,14 @@ function delete_from_list(id) {
 	if (id == clicked) {
 		clearClicked();
 	}
-	elem = document.getElementById(id);
-	elem.parentNode.removeChild(elem);
 
+	//elem = document.getElementById(id);
+	//elem.parentNode.removeChild(elem);
 
-	//remove from map @@@@@@eldad
+	//remove from active
+	//removeLine();
 
-	//remove from active @@@@@eldad
+	get_flights_service();
 
 }
 
@@ -273,6 +269,14 @@ function initMap() {
 	// The map, centered at Uluru
 	map = new google.maps.Map(
 		document.getElementById('map'), { zoom: 5, center: uluru });
+
+	google.maps.event.addListener(map, "click", function () {
+		//event.preventDefault();
+		if (clicked != null) {
+			get_flights_service();
+			clearClicked();
+		}
+	});
 
 }
 
@@ -288,34 +292,16 @@ function addMarker(props) {
 	if (props.iconImage) { // check for icon change
 		marker.setIcon(props.iconImage);
 	}
-	if (props.content) { //check for content change
-		var infoWindow = new google.maps.InfoWindow({
-			content: props.content
-		});
-		/*marker.addListener('click', function () { ///popping the info window
-		 infoWindow.open(map, marker);
-		});*/
+
+	if (clicked == props.id) {
+		marker.setAnimation(google.maps.Animation.BOUNCE);
 	}
 
-	marker.addListener('mouseenter', function () {
-		marker.setIcon('redplaneicon.png');
-	});
-	marker.addListener('mouseleave', function () {
-		marker.setIcon('planeicon.png');
-	});
-	marker.addListener('click', function () { /// make the marker jump and show path
-
-		if (marker.getAnimation() !== null) {
-			marker.setAnimation(null);
-		} else {
-			marker.setAnimation(google.maps.Animation.BOUNCE);
-		}
+	google.maps.event.addListener(marker, "click", function () {
+		event.preventDefault();
+		get_flights_service();
+		marker.setAnimation(google.maps.Animation.BOUNCE);
 		show_more_details(props.id);
-
-	});
-	marker.addListener('click', function () {
-
-		removeLine();
 	});
 
 	markers.push(marker);
