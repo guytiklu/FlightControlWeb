@@ -1,11 +1,8 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
-using Newtonsoft.Json;
 
 namespace FlightControlWeb
 {
@@ -14,7 +11,7 @@ namespace FlightControlWeb
         public static List<FlightData> internalFlights = new List<FlightData>();
         public static List<ServerInfo> externalFlightsServers = new List<ServerInfo>();
 
-        public List<Flight> getInternal(DateTime time)
+        public List<Flight> getInternal(DateTime time) // get list of internal flights according to time
         {
             List<Flight> list = new List<Flight>();
             foreach (FlightData x in internalFlights){
@@ -28,10 +25,9 @@ namespace FlightControlWeb
             return list;
         }
 
-        public async Task<List<Flight>> getAllFlights(DateTime time)
+        public async Task<List<Flight>> getAllFlights(DateTime time) // get list of all flights according to time
         {
-
-            List<Flight> list = getInternal(time);
+            List<Flight> list = getInternal(time); // first get internals
             //add to list from external servers
             foreach (ServerInfo si in externalFlightsServers.ToList<ServerInfo>())
             {
@@ -47,19 +43,14 @@ namespace FlightControlWeb
                         time.ToString("yyyy-MM-ddTHH:mm:ssZ") );
                     response.EnsureSuccessStatusCode();
                     string responseBody = await response.Content.ReadAsStringAsync();
-                    // string responseBody = await client.GetStringAsync(uri);
-
-                    //Debug.WriteLine(responseBody);
                     try
                     {
-                        //exList = JsonConvert.DeserializeObject<List<Flight>>(responseBody);
                         exList = Newtonsoft.Json.JsonConvert.DeserializeObject<List<Flight>>(responseBody);
                     }
                     catch
                     {
                         exList = new List<Flight>();
                     }
-
                 }
                 catch (HttpRequestException e)
                 {
@@ -70,15 +61,12 @@ namespace FlightControlWeb
                 // Need to call dispose on the HttpClient object
                 // when done using it, so the app doesn't leak resources
                 client.Dispose();
-
-                //responseBody now holds info that came from server
-                //convert from Json to list:
                 
                 foreach (Flight f in exList.ToList())
                 {
                     f.Is_external = true;
                 }
-                list.AddRange(exList);
+                list.AddRange(exList); // add the external list got from server to total list
             }
 
             return list ;
@@ -98,14 +86,14 @@ namespace FlightControlWeb
         public async Task<FlightPlan> GetFlightPlan(string id)
         {
             FlightPlan fp = null;
-            foreach (FlightData x in internalFlights)
+            foreach (FlightData x in internalFlights) // first search in internals
             {
                 if (x.Id == id)
                 {
                     fp = x.Fp;
                 }
             }
-            if (fp == null)
+            if (fp == null) // if not found search in externals
             {
                 foreach (ServerInfo si in externalFlightsServers.ToList<ServerInfo>())
                 {
@@ -118,7 +106,6 @@ namespace FlightControlWeb
                         HttpResponseMessage response = await client.GetAsync(si.ServerURL + "/api/FlightPlan/" + id);
                         response.EnsureSuccessStatusCode();
                         string responseBody = await response.Content.ReadAsStringAsync();
-                        // string responseBody = await client.GetStringAsync(uri);
 
                         Console.WriteLine(responseBody);
                         fp = Newtonsoft.Json.JsonConvert.DeserializeObject<FlightPlan>(responseBody);
@@ -136,7 +123,6 @@ namespace FlightControlWeb
 
                     //responseBody now holds info that came from server
                     //convert from Json to list:
-
 
                     if (fp.Company_name != null)
                     {
@@ -173,10 +159,6 @@ namespace FlightControlWeb
             }
         }
 
-        public void printInternals()
-        {
-
-        }
     }
 
 }

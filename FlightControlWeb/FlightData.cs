@@ -1,16 +1,9 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Components;
-using Microsoft.CodeAnalysis;
 
 namespace FlightControlWeb
 {
     public class FlightData
     {
-
-
         private string id;
         public string Id
         {
@@ -41,7 +34,7 @@ namespace FlightControlWeb
             set { fp = value; }
         }
 
-        public bool onAir(DateTime dt)
+        public bool onAir(DateTime dt) // checks if flight is on air according to time
         {
             //calculate end time:
             DateTime landingTime = fp.Initial_location.Date_time;
@@ -56,21 +49,21 @@ namespace FlightControlWeb
             return false;
         }
 
-        public Location getAccuratePosition(DateTime dt)
+        public Location getAccuratePosition(DateTime dt) // returns position of flight according to time
         {
             DateTime a = fp.Initial_location.Date_time;
             DateTime b;
             Segment sa = new Segment(fp.Initial_location.Longitude, fp.Initial_location.Latitude, 0);
             Segment sb;
 
-            foreach (Segment s in fp.Segments)
+            foreach (Segment s in fp.Segments) // iterate over sergments
             {
                 b = a;
                 b = b.AddSeconds(s.Timespan_seconds);
                 sb = s;
 
                 if (dt.CompareTo(a) > 0 && dt.CompareTo(b) < 0)
-                {
+                { // if time is between the adjacent segments a,b calcualte percise value
                     TimeSpan secondsOnAirFromA = dt.Subtract(a);
                     double partialTimeOnAir = secondsOnAirFromA.TotalSeconds / s.Timespan_seconds;
                     double startLongitude = sa.Longitude;

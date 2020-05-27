@@ -1,0 +1,5 @@
+205871544,Guy Ingber
+316363399,Eldad Levi
+
+Unit Test 1:
+This tests tests the class FlightData, more specifically the function onAir(date), which determines if the current flight is on air at the time given, or not.

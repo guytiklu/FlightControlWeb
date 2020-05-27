@@ -19,7 +19,14 @@ namespace FlightControlWeb.Controllers
             FlightManager fm = new FlightManager();
             if (Request.Query.ContainsKey("sync_all"))
             {
-                return fm.getAllFlights(time).Result;
+                try
+                {
+                    return fm.getAllFlights(time).Result;
+                }
+                catch
+                {
+
+                }
             }
             return fm.getInternal(time);
         }

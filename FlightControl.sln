@@ -3,7 +3,9 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.29911.84
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FlightControlWeb", "FlightControlWeb\FlightControlWeb.csproj", "{BDB08672-4A01-4D16-9B7A-A705F6770E81}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FlightControlWeb", "FlightControlWeb\FlightControlWeb.csproj", "{BDB08672-4A01-4D16-9B7A-A705F6770E81}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UnitTestFlightControlWeb", "UnitTestFlightControlWeb\UnitTestFlightControlWeb.csproj", "{A8CDCD31-DA33-4DF9-8A45-3FBB2BCCA7D5}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -15,6 +17,10 @@ Global
 		{BDB08672-4A01-4D16-9B7A-A705F6770E81}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{BDB08672-4A01-4D16-9B7A-A705F6770E81}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{BDB08672-4A01-4D16-9B7A-A705F6770E81}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A8CDCD31-DA33-4DF9-8A45-3FBB2BCCA7D5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A8CDCD31-DA33-4DF9-8A45-3FBB2BCCA7D5}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A8CDCD31-DA33-4DF9-8A45-3FBB2BCCA7D5}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A8CDCD31-DA33-4DF9-8A45-3FBB2BCCA7D5}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
